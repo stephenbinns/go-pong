@@ -14,24 +14,24 @@ type Game struct {
 	window                 *sdl.Window
 	renderer               *sdl.Renderer
 	running                bool
-	bat1_score, bat2_score *Label
 	divider                *sdl.Rect
 	bat1, bat2             *Bat
 	ball                   *Ball
 	font                   *ttf.Font
+	bat1_score, bat2_score *Label
 }
 
 func NewGame() *Game {
-	window := sdl.CreateWindow("test", sdl.WINDOWPOS_UNDEFINED, sdl.WINDOWPOS_UNDEFINED,
+	window, err := sdl.CreateWindow("test", sdl.WINDOWPOS_UNDEFINED, sdl.WINDOWPOS_UNDEFINED,
 		int(winWidth), int(winHeight), sdl.WINDOW_SHOWN)
 
-	if window == nil {
+	if err != nil {
 		fmt.Fprintf(os.Stderr, "Failed to create window", sdl.GetError())
 		os.Exit(1)
 	}
 
-	renderer := sdl.CreateRenderer(window, -1, sdl.RENDERER_ACCELERATED)
-	if renderer == nil {
+	renderer, err := sdl.CreateRenderer(window, -1, sdl.RENDERER_ACCELERATED)
+	if err != nil {
 		fmt.Fprintf(os.Stderr, "Failed to create renderer: %s\n", sdl.GetError())
 		os.Exit(2)
 	}
@@ -54,7 +54,18 @@ func NewGame() *Game {
 	bat1_score := &Label{0, &sdl.Rect{100, 50, 50, 75}, font}
 	bat2_score := &Label{0, &sdl.Rect{600, 50, 50, 75}, font}
 
-	return &Game{window, renderer, true, bat1_score, bat2_score, divider, bat1, bat2, ball, font}
+	return &Game{
+		window,
+		renderer,
+		true,
+		divider,
+		bat1,
+		bat2,
+		ball,
+		font,
+		bat1_score,
+		bat2_score,
+		}
 }
 
 func (g *Game) EventLoop() {
